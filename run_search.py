@@ -8,7 +8,6 @@ import argparse
 from retriever.search import FashionRetriever
 from shared.config import load_config
 
-
 def main() -> None:
     config = load_config()
     parser = argparse.ArgumentParser(

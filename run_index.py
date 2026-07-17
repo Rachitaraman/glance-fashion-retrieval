@@ -5,3 +5,4 @@ from indexer.build_index import run_indexer
 
 if __name__ == "__main__":
     run_indexer()
+    

@@ -1,5 +1,4 @@
 # Glance ML Internship — Multimodal Fashion & Context Retrieval
-
 clip_model: "clip-ViT-B-32"
 embedding_dim: 512
 

@@ -11,7 +11,6 @@ Usage:
     python scripts/build_metadata.py
     python scripts/build_metadata.py --images-dir data/images --out data/metadata.csv
 """
-
 from __future__ import annotations
 
 import argparse

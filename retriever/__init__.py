@@ -1,1 +1,1 @@
-"""Part B: Natural language query retrieval."""
+"""Part B : Natural language query retrieval."""
