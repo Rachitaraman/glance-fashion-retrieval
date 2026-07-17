@@ -1,0 +1,10 @@
+data/*.jpg
+data/*.png
+data/*.jpeg
+index_store/
+outputs/
+__pycache__/
+*.pyc
+.config/
+sample_data/
+drive/

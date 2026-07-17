@@ -1,0 +1,49 @@
+# Glance ML Internship — Multimodal Fashion & Context Retrieval
+
+clip_model: "clip-ViT-B-32"
+embedding_dim: 512
+
+dataset:
+  target_size: 800          # 500–1000 images per assignment spec
+  min_size: 500
+  images_dir: "data/images"
+  metadata_path: "data/metadata.csv"
+  raw_dir: "data/raw"
+
+index:
+  output_dir: "outputs/index"
+  faiss_index_name: "fashion_index.faiss"
+  metadata_name: "index_metadata.json"
+  embeddings_name: "image_embeddings.npy"
+  batch_size: 32
+
+retrieval:
+  default_top_k: 5
+
+# Zero-shot label sets used during metadata enrichment
+enrichment:
+  environments:
+    - "office interior workplace"
+    - "urban street city outdoors"
+    - "park nature outdoors"
+    - "home interior living room"
+  clothing_types:
+    - "formal blazer or button-down shirt"
+    - "casual hoodie or t-shirt"
+    - "outerwear jacket or coat"
+  colors:
+    - "red clothing"
+    - "blue clothing"
+    - "black clothing"
+    - "white clothing"
+    - "green clothing"
+    - "yellow clothing"
+    - "brown clothing"
+    - "gray clothing"
+    - "pink clothing"
+    - "orange clothing"
+  vibes:
+    - "professional formal attire"
+    - "casual relaxed style"
+    - "trendy streetwear style"
+    - "cozy comfortable style"
