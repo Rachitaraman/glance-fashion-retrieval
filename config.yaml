@@ -1,0 +1,96 @@
+# Glance ML Internship — Multimodal Fashion & Context Retrieval
+
+# CLIP backbone is now loaded via open_clip in shared/clip_model.py
+# (ViT-B-32 / openai checkpoint, hardcoded there — see that file's docstring).
+embedding_dim: 512
+
+dataset:
+  target_size: 800          # 500–1000 images per assignment spec (informational; you supplied 3,200)
+  min_size: 500
+  images_dir: "data/images"
+  metadata_path: "data/metadata.csv"
+  raw_dir: "data/raw"
+
+# Where the FAISS index + structured attribute records get written by
+# indexer/build_index.py, and read back by retriever/search.py.
+index_store_dir: "index_store"
+
+# ---------------------------------------------------------------------------
+# Region-based multi-label enrichment (replaces the old single-label,
+# whole-image-only "enrichment" block). See scripts/enrich_metadata.py.
+# ---------------------------------------------------------------------------
+
+# Garment vocabulary - expanded to include accessories, which were
+# completely absent before. Without "tie" existing anywhere in this list,
+# a query like "red tie" had zero chance of matching no matter how good
+# the retrieval math was - this was a total absence of representable
+# signal, not a ranking problem.
+garment_labels:
+  - shirt
+  - t-shirt
+  - blazer
+  - hoodie
+  - jacket or coat
+  - dress
+  - skirt
+  - pants or trousers
+  - tie
+  - scarf
+  - hat
+  - handbag
+  - sunglasses
+
+color_labels:
+  - red
+  - blue
+  - yellow
+  - green
+  - black
+  - white
+  - gray
+  - brown
+  - navy
+  - pink
+  - purple
+  - orange
+  - beige
+  - khaki
+
+environment_labels:
+  - office interior
+  - urban street
+  - park
+  - home interior
+
+vibe_labels:
+  - professional formal
+  - casual relaxed
+  - trendy streetwear
+  - cozy comfortable
+
+# Region definitions as fractional (x0, y0, x1, y1) crops of each image,
+# used instead of classifying only the whole image (no spatial grounding
+# otherwise). These are geometric heuristics, not a trained segmentation
+# model - documented tradeoff: good enough for centered fashion photos,
+# a real garment segmentation model (e.g. SegFormer/U2Net fine-tuned on
+# Fashionpedia) is the natural upgrade path if given more time.
+regions:
+  neckline:     [0.30, 0.10, 0.70, 0.28]   # collar/neck band - where ties/scarves live
+  upper_body:   [0.20, 0.18, 0.80, 0.55]   # shirt/blazer/jacket region
+  lower_body:   [0.20, 0.55, 0.80, 0.90]   # pants/skirt region
+  # "global" (the full image) is used separately for environment + vibe,
+  # since those are scene-level properties, not garment-region properties
+
+confidence_threshold: 0.22   # multi-label cutoff; tune against a small
+                              # human-graded validation sample if precision
+                              # looks off in either direction
+
+# Late-fusion weights used at query time in retriever/search.py:
+#   final_score = alpha * clip_similarity + beta * attribute_match_fraction
+# alpha=0.6/beta=0.4 gives CLIP's broad recall the majority weight, with
+# structured attribute matching applying a meaningful but not overriding
+# correction. Tune against a human-graded relevance sample if you have one.
+fusion:
+  alpha: 0.6
+  beta: 0.4
+  candidate_pool: 50
